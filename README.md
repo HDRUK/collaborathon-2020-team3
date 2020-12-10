@@ -15,11 +15,11 @@ This is a repository that contains FIHR CQL definitions and functions that attem
   - ICD-10 Codes
   - SNOMED-CT Codes
 
-Extensions:
+### Extensions:
 - Age
 - England Tier Levels
 
-TODO:
+### TODO:
 - Gender
 - Ethnicity
 - Symptom Severity
