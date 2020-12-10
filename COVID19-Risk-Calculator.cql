@@ -1,14 +1,20 @@
+// Valid Patient: 25298
+// Invalid Patient: P48
+
 library TestArtifact version '1'
 using FHIR version '4.0.0'
 include "FHIRHelpers" version '4.0.0' called FHIRHelpers
+
 codesystem "SNOMED": 'http://snomed.info/sct'
 codesystem "ICD-10-CM": 'urn:oid:2.16.840.1.113883.6.90'
 codesystem "CONDCLINSTATUS": 'http://terminology.hl7.org/CodeSystem/condition-clinical'
 codesystem "CONDVERSTATUS": 'http://terminology.hl7.org/CodeSystem/condition-ver-status'
+
 code "Essential hypertension (disorder) code": '59621000' from "SNOMED" display 'Essential hypertension (disorder)'
 code "Malignant hypertensive chronic kidney disease (disorder) code": '285831000119108' from "SNOMED" display 'Malignant hypertensive chronic kidney disease (disorder)'
 code "Condition Active code": 'active' from "CONDCLINSTATUS" display 'Active'
 code "Condition Confirmed code": 'confirmed' from "CONDVERSTATUS" display 'Confirmed'
+
 code "Fever (ICD-10)": 'R50.9' from "ICD-10-CM" display 'fever ICD-10'
 code "Fever (SNOMED)": '267036007' from "SNOMED" display 'fever SNOMED'
 code "Cough (ICD-10)": 'R05' from "ICD-10-CM" display 'cough ICD-10'
@@ -34,6 +40,7 @@ parameter "Measurement Period" Interval<DateTime>
     default Interval[@2020-11-11T00:00:00.0, @2020-12-12T00:00:00.0)  
   
 context Patient
+
 define "AgeRange-old at end of Measurement Period":
   AgeInYearsAt(end of "Measurement Period") between 60 and 110
     
@@ -42,7 +49,8 @@ define "AgeRange-middle at end of Measurement Period":
     
 define "AgeRange-young at end of Measurement Period":
   AgeInYearsAt(end of "Measurement Period") < 19
-    //Define Covid-19 tiers
+
+//Define Covid-19 tiers
 define "England-Tier3":
     { 'South Yorkshire', 'West Yorkshire', 'North East Lincolnshire', 'North Lincolnshire', 'Kingston upon Hull/Hull', 'East Riding of Yorkshire' }
 define "England-Tier2":
@@ -50,11 +58,12 @@ define "England-Tier2":
 define "England-Teir1":
     { 'Isle of Wight', 'Cornwall', 'Isles of Scilly'}
       
-      //test if patient in tier3
+// Test if patient in tier3
 define "PatientInTier3":
     if exists ([Condition: Patient.address.district.value in "England-Tier3"]) then true
       else false
-      //test if patient has the symptoms
+
+//test if patient has the symptoms
 define "HasFever":
   exists(ActiveCondition([Condition: "Fever (ICD-10)"])) or exists(ActiveCondition([Condition: "Fever (SNOMED)"]))
 define "HasCough":
@@ -80,7 +89,8 @@ define "HasHeadache":
     
 define "HasDizziness":
   exists(ActiveCondition([Condition: "Dizziness (ICD-10)"])) or exists(ActiveCondition([Condition: "Dizziness (SNOMED)"]))  
-    /* Not really used but good to have */
+
+/* Not really used but good to have */
 define "MeetsInclusionCriteria":
     ("AgeRange-old at end of Measurement Period"
   and "HasFever") or  ("AgeRange-old at end of Measurement Period"
@@ -88,11 +98,13 @@ define "MeetsInclusionCriteria":
   and "HasSenseOfSmellImpared" )
 define "InPopulation":
   "MeetsInclusionCriteria" and not "MeetsExclusionCriteria"
-    //Adults that vomit do not have covid-19 (usually)
+
+//Adults that vomit do not have covid-19 (usually)
 define "MeetsExclusionCriteria":
   not "HasFever" and not "HasCough" and not "HasGastrointestinalSymptoms"
     and "AgeRange-young at end of Measurement Period"
-    // High, medium, low risk populations to go into an ICU (based on the news)
+
+// High, medium, low risk populations to go into an ICU (based on the news)
 define "InHighRiskPopulation":
     ("AgeRange-old at end of Measurement Period"
   and "HasFever") or  ("AgeRange-old at end of Measurement Period"
