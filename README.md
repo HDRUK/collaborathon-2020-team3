@@ -19,6 +19,8 @@ This is a repository that contains FIHR CQL definitions and functions that attem
 - Age
 - England Tier Levels
 
+![CQL Screenshot](https://github.com/HDRUK/collaborathon-2020-team3/raw/main/Capture.PNG)
+
 ### TODO:
 - Gender
 - Ethnicity
