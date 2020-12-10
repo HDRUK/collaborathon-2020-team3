@@ -1,4 +1,4 @@
-# collaborathon-2020-team3
+# HDR UK Collaborathon 2020 - Team 3
 HDR UK Collaborathon Team3 Submission
 
 ## Team Members
